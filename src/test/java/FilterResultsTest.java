@@ -1,6 +1,4 @@
 import Common.Constants;
-import Pages.MainPage;
-import Pages.SearchResultsPage;
 import io.qameta.allure.Feature;
 import io.qameta.allure.testng.AllureTestNg;
 import org.testng.Assert;
@@ -16,13 +14,10 @@ public class FilterResultsTest extends BaseTest{
     String maxPrice = "20000";
     String expectedPriceActiveFilterText = "10 000 ₴ - 20 000 ₴";
 
-    SearchResultsPage searchResultsPage;
 
     @BeforeMethod
     public void performSearch() {
         driver.get(Constants.BASE_URL);
-        MainPage mainPage = new MainPage(driver);
-        searchResultsPage = new SearchResultsPage(driver);
 
         mainPage.searchProductByText(textToSearch);
         searchResultsPage.waitForResultsLoaded();
