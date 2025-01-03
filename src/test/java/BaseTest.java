@@ -31,18 +31,12 @@ public class BaseTest {
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
-        File newFile = null;
+        File newFile = new File(videoFile.getParent(), result.getName() + ".avi");
         try {
             VideoRecorder.stopRecording();
-            //Rename created video record to test name
-            newFile = new File(videoFile.getParent(), result.getName() + ".avi");
-            boolean isRenamed = videoFile.renameTo(newFile);
 
-            if (isRenamed) {
-                System.out.println("Recorded file renamed to: " + newFile.getName());
-            } else {
-                System.out.println("Failed to rename recorded file.");
-            }
+            //Rename created video record to test name
+            VideoRecorder.renameVideoRecord(videoFile, newFile);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -66,14 +60,7 @@ public class BaseTest {
             }
         } else if (result.getStatus() == ITestResult.SUCCESS) {
             // Delete video for passed tests
-            if (newFile.exists()) {
-                boolean isDeleted = newFile.delete();
-                if (isDeleted) {
-                    System.out.println("Recorded file deleted successfully: " + newFile.getName());
-                } else {
-                    System.out.println("Failed to delete recorded file: " + newFile.getName());
-                }
-            }
+            VideoRecorder.deleteRecordedVideo(newFile);
         }
 
         if (driver != null) {

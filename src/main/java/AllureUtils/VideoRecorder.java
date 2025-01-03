@@ -42,4 +42,29 @@ public class VideoRecorder {
     public static void stopRecording() throws Exception {
         screenRecorder.stop();
     }
+
+    public static void renameVideoRecord(File oldFile, File newFile) {
+        try {
+            boolean isRenamed = oldFile.renameTo(newFile);
+
+            if (isRenamed) {
+                System.out.println("Recorded file renamed to: " + newFile.getName());
+            } else {
+                System.out.println("Failed to rename recorded file.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void deleteRecordedVideo(File video) {
+        if (video.exists()) {
+            boolean isDeleted = video.delete();
+            if (isDeleted) {
+                System.out.println("Recorded file deleted successfully: " + video.getName());
+            } else {
+                System.out.println("Failed to delete recorded file: " + video.getName());
+            }
+        }
+    }
 }
