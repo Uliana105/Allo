@@ -3,6 +3,7 @@ package Pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class SearchResultsPage {
     private final By priceActiveFilter = By.cssSelector(".toolbar-block div.f-active a[data-id='price']");
     private final By pagesLinks = By.cssSelector("a[class='pagination__links']");
     private final By exactPageLinks = By.cssSelector("a.pagination__next__link");
+    private final By footer = By.cssSelector("div.footer__main ");
 
     public void waitForResultsLoaded() {
         pageTools.waitForElementVisibility(specialOffersPic);
@@ -97,7 +99,10 @@ public class SearchResultsPage {
     }
 
     public void clickNextPage() {
+        Actions action = new Actions(driver);
+
         pageTools.scrollToTheBottom();
+        action.moveToElement(driver.findElement(footer)).perform();
         driver.findElement(exactPageLinks).click();
     }
 }

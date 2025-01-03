@@ -14,13 +14,7 @@ public class PageTools {
         this.driver = driver;
     }
     public boolean isElementPresent(By by) {
-        try {
-            driver.findElement(by);
-            return true;
-        }
-        catch (org.openqa.selenium.NoSuchElementException e) {
-            return false;
-        }
+        return driver.findElements(by).size() != 0;
     }
 
     public void typeWithWipe(String text, By by) {

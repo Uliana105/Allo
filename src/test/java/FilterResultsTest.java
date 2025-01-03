@@ -1,29 +1,25 @@
-import Common.CommonActions;
 import Common.Constants;
 import Pages.MainPage;
 import Pages.SearchResultsPage;
 import io.qameta.allure.Feature;
 import io.qameta.allure.testng.AllureTestNg;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Listeners({AllureTestNg.class})
-public class FilterResultsTest {
+public class FilterResultsTest extends BaseTest{
     String textToSearch = "IPhone";
     String minPrice = "10000";
     String maxPrice = "20000";
     String expectedPriceActiveFilterText = "10 000 ₴ - 20 000 ₴";
-    public WebDriver driver;
 
     SearchResultsPage searchResultsPage;
 
     @BeforeMethod
-    public void setUp() {
-        driver = CommonActions.createDriver();
-
+    public void performSearch() {
         driver.get(Constants.BASE_URL);
         MainPage mainPage = new MainPage(driver);
         searchResultsPage = new SearchResultsPage(driver);
@@ -72,15 +68,10 @@ public class FilterResultsTest {
 
                 prices = searchResultsPage.getProductsPrices();
                 Assert.assertTrue(prices.stream().allMatch(num -> num >= Integer.parseInt(minPrice) && num <= Integer.parseInt(maxPrice)),
-                        "Prices aren't in range: " + prices);
+                        "Prices aren't in range: " + prices.stream()
+                                .filter(number -> number < 10000 || number > 20000)
+                                .collect(Collectors.toList()));
             }
-        }
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
         }
     }
 }
