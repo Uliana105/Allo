@@ -27,7 +27,7 @@ public class CreateAccountTest {
                 .decoder(new GsonDecoder())
                 .logger(new Slf4jLogger(UserClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(UserClient.class, Constants.API_BASE_URL);
+                .target(UserClient.class, Constants.API_AUTOMATIONEXERCISE_URL);
 
         userData = new UserData().generateRandomUserData();
         System.out.println(userData);

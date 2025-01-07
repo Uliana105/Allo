@@ -25,7 +25,7 @@ public class ProductsListTest {
                 .decoder(new GsonDecoder())
                 .logger(new Slf4jLogger(ProductClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(ProductClient.class, Constants.API_BASE_URL);
+                .target(ProductClient.class, Constants.API_AUTOMATIONEXERCISE_URL);
 
         productResource = productClient.findAll();
 
