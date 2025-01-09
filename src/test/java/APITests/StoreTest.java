@@ -5,7 +5,10 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 public class StoreTest {
     String GETResponse = "{\n" +
@@ -19,6 +22,12 @@ public class StoreTest {
             "        \"availability\": [\n" +
             "          {\n" +
             "            \"storeId\": \"001\"\n" +
+            "          },\n" +
+            "          {\n" +
+            "            \"storeId\": \"002\"\n" +
+            "          },\n" +
+            "          {\n" +
+            "            \"storeId\": \"003\"\n" +
             "          }\n" +
             "        ]\n" +
             "      }\n" +
@@ -27,7 +36,7 @@ public class StoreTest {
             "}\n";
     String POSTResponse = "[\n" +
             "  {\n" +
-            "    \"id\": \"001\",\n" +
+            "    \"id\": \"\",\n" +
             "    \"items\": [\n" +
             "      {\n" +
             "        \"itemId\": \"12345\",\n" +
@@ -44,15 +53,24 @@ public class StoreTest {
 
         String id = JsonPath.read(GETResponseJson, "$.id");
         String location = JsonPath.read(GETResponseJson, "$.location");
-        String storeId = JsonPath.read(GETResponseJson, "$.buylist[0].product.availability[0].storeId");
+        List<String> storeIds = JsonPath.read(GETResponseJson, "$.buylist[0].product.availability[*].storeId");
 
-        JSONObject POSTBody = createPOSTBody(id, location, storeId);
+        JSONObject POSTBody;
+        JSONArray POSTResponseJson;
 
-        JSONArray POSTResponseJson = (JSONArray) parser.parse(POSTResponse);
+        for (String storeId: storeIds) {
+            POSTBody = createPOSTBody(id, location, storeId);
+            System.out.println(POSTBody);
+            System.out.println(replaceInJSONArray(POSTBody, "storages","storageId", "0000"));
+            System.out.println(replaceInJSONArray2(POSTBody, "storageId", "0000", "1111"));
+//            System.out.println(replaceInJSONArrayUsingJsonPath(POSTBody, "$..storages[0]", "storageId", "1112"));
 
-        String itemId = JsonPath.read(POSTResponseJson, "$[0].items[0].itemId").toString().replaceAll("\\[]\"", "");
+            POSTResponseJson = (JSONArray) parser.parse(POSTResponse);
 
-        Assert.assertEquals(id, itemId, "IDs don't match");
+            String itemId = JsonPath.parse(POSTResponseJson).read("$[0].items[0].itemId");
+
+            Assert.assertEquals(id, itemId, "IDs don't match");
+        }
     }
 
     public JSONObject createPOSTBody(String id, String location, String storeId) {
@@ -69,5 +87,17 @@ public class StoreTest {
         mainJsonObject.put("storages", storagesJsonArray);
 
         return mainJsonObject;
+    }
+
+    public JSONObject replaceInJSONArray(JSONObject jsonObject, String arrayName, String key, String newValue) {
+        JSONObject object = (JSONObject) ((JSONArray) jsonObject.get(arrayName)).get(0);
+        object.put(key, newValue);
+        return jsonObject;
+    }
+
+    public JSONObject replaceInJSONArray2(JSONObject jsonObject, String key, String oldValue, String newValue) throws ParseException {
+        JSONParser parser = new JSONParser();
+        return (JSONObject) parser.parse(jsonObject.toJSONString()
+              .replaceAll("\"" + key + "\":\"" + oldValue + "\"", "\"" + key + "\":\"" + newValue + "\""));
     }
 }
