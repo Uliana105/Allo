@@ -3,10 +3,13 @@ package Mobile.Objects;
 import Common.Constants;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 public class PageTools {
     protected AndroidDriver driver;
@@ -30,16 +33,21 @@ public class PageTools {
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(by)));
     }
 
-    public void scrollToTheBottom() {
-        // Cast WebDriver to JavascriptExecutor
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+    public void performScrollDown() {
+        int windowHeight = driver.manage().window().getSize().getHeight();
+        int windowWidth = driver.manage().window().getSize().getWidth();
 
-        // Scroll to the bottom of the page
-        js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-        try {
-            Thread.sleep(Constants.MICRO_TIMEOUT * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+        Point start = new Point((int) (windowWidth * 0.6), (int) (windowHeight * 0.9));
+        Point end = new Point ((int) (windowWidth * 0.6), (int) (windowHeight * 0.25));
+        Sequence swipe = new Sequence(finger, 1);
+
+        swipe.addAction(finger.createPointerMove(Duration.ofMillis(0),
+                PointerInput.Origin.viewport(), start.getX(), start.getY()));
+        swipe.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+        swipe.addAction(finger.createPointerMove(Duration.ofMillis(1000),
+                PointerInput.Origin.viewport(), end.getX(), end.getY()));
+        swipe.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+        driver.perform(Arrays.asList(swipe));
     }
 }
