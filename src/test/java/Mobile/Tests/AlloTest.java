@@ -6,9 +6,32 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class AlloTest extends BaseTest{
+
+    private HashMap<String, String> cityCase = new HashMap<>(){{
+        put("Київ","Києві");
+        put("Харків","Харкові");
+        put("Одеса","Одесі");
+        put("Кривий Ріг","Кривому Розі");
+        put("Дніпро","Дніпрі");
+        put("Львів","Львові");
+        put("Запоріжжя","Запоріжжі");
+        put("Полтава","Полтаві");
+        put("Хмельницький","Хмельницькому");
+        put("Вінниця","Вінниці");
+        put("Рівне","Рівному");
+        put("Тернопіль","Тернополі");
+        put("Чернівці","Чернівцях");
+        put("Житомир","Житомирі");
+        put("Луцьк","Луцьку");
+        put("Івано-Франківськ","Івано-Франківську");
+        put("Кропивницький","Кропивницькому");
+        put("Черкаси","Черкасах");
+        put("Ужгород","Ужгороді");
+    }};
 
     @BeforeMethod
     public void openAlloMainPage() {
@@ -57,10 +80,15 @@ public class AlloTest extends BaseTest{
         String newCity = cities.get(RandomGenerator.generateRandomInteger(cities.size()));
         alloPage.selectCity(newCity);
 
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         String newProductPageTitle = alloPage.getPageTitleText();
         System.out.println(newProductPageTitle);
 
         Assert.assertNotEquals(productPageTitle, newProductPageTitle, "Title wasn't changed");
-        Assert.assertEquals(newProductPageTitle, String.format("Телевізори у %s", newCity));
+        Assert.assertEquals(newProductPageTitle, String.format("Телевізори у %s", cityCase.get(newCity)));
     }
 }

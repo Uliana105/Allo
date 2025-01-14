@@ -39,10 +39,20 @@ public class RandomGenerator {
         }
 
         Random random = new Random();
-        int min = (int) Math.pow(10, length - 1);
-        int max = (int) Math.pow(10, length) - 1;
+//        int min = (int) Math.pow(10, length - 1);
+//        int max = (int) Math.pow(10, length) - 1;
 
-        return random.nextInt(max - min + 1) + min;
+        return random.nextInt(length);
+    }
+
+    // Method to generate a random integer with a given number of digits
+    public static int generateInteger(int maxInt) {
+        if (maxInt <= 0) {
+            throw new IllegalArgumentException("Length must be greater than 0");
+        }
+
+        Random random = new Random();
+        return random.nextInt(maxInt);
     }
 
     public static LocalDate generateRandomDate(LocalDate startDate, LocalDate endDate) {

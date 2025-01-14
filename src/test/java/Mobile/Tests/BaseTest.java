@@ -1,15 +1,18 @@
 package Mobile.Tests;
 
+import AllureUtils.ScreenshotRecorder;
 import Common.Constants;
-import Mobile.Objects.Actions;
-import Mobile.Objects.AlloPage;
-import Mobile.Objects.GoogleSearchPage;
-import Mobile.Objects.MainScreen;
+import Mobile.Objects.*;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
+import io.qameta.allure.Allure;
+import org.apache.commons.io.FileUtils;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -21,6 +24,7 @@ public class BaseTest {
     Actions actions;
     GoogleSearchPage googleSearchPage;
     AlloPage alloPage;
+    WebDriverIOApp webDriverIOApp;
     @BeforeMethod
     public void setUp() throws MalformedURLException {
 
@@ -39,10 +43,19 @@ public class BaseTest {
         actions = new Actions(driver);
         googleSearchPage = new GoogleSearchPage(driver);
         alloPage = new AlloPage(driver);
+        webDriverIOApp = new WebDriverIOApp(driver);
+
     }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown(ITestResult result) {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            try {
+                ScreenshotRecorder.takeScreenshot(result.getName(), driver);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         driver.quit();
     }
 }

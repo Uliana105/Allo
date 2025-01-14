@@ -75,7 +75,7 @@ public class AlloPage {
     }
 
     public String getPageTitleText() {
-        pageTools.waitForElementVisibility(searchResults);
+        pageTools.waitForElementVisibility(filtersButton);
         return driver.findElement(pageTitle).getText();
     }
 
