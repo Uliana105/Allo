@@ -39,14 +39,14 @@ public class RandomGenerator {
         }
 
         Random random = new Random();
-//        int min = (int) Math.pow(10, length - 1);
-//        int max = (int) Math.pow(10, length) - 1;
+        int min = (int) Math.pow(10, length - 1);
+        int max = (int) Math.pow(10, length) - 1;
 
-        return random.nextInt(length);
+        return random.nextInt(max - min + 1) + min;
     }
 
     // Method to generate a random integer with a given number of digits
-    public static int generateInteger(int maxInt) {
+    public static int randInteger(int maxInt) {
         if (maxInt <= 0) {
             throw new IllegalArgumentException("Length must be greater than 0");
         }

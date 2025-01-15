@@ -77,7 +77,7 @@ public class AlloTest extends BaseTest{
 
         List<String> cities = alloPage.getAvailableLocations();
         System.out.println(cities);
-        String newCity = cities.get(RandomGenerator.generateRandomInteger(cities.size()));
+        String newCity = cities.get(RandomGenerator.randInteger(cities.size()));
         alloPage.selectCity(newCity);
 
         try {
