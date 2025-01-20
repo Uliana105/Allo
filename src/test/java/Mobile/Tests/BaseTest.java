@@ -25,14 +25,15 @@ public class BaseTest {
     GoogleSearchPage googleSearchPage;
     AlloPage alloPage;
     WebDriverIOApp webDriverIOApp;
+
     @BeforeMethod
     public void setUp() throws MalformedURLException {
-
+        System.out.println(System.getProperty("user.dir"));
         UiAutomator2Options options = new UiAutomator2Options()
                 .setUdid("emulator-5554")
 //                .setAppPackage("com.android.chrome")
 //                .setAppActivity("com.google.android.apps.chrome.Main");
-                .setApp("D:\\intellj\\allo1\\src\\main\\resources\\android.wdio.native.app.v1.0.8.apk");
+                .setApp(System.getProperty("user.dir") + "\\src\\main\\resources\\android.wdio.native.app.v1.0.8.apk");
         driver = new AndroidDriver(
                 // The default URL in Appium 1 is http://127.0.0.1:4723/wd/hub
                 new URL("http://127.0.0.1:4723"), options

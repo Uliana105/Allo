@@ -3,7 +3,7 @@ package Mobile.Tests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class WebDriverIOTest extends BaseTest{
+public class WebDriverIOTest extends BaseTest {
 
     @Test
     public void horizontalScroll() {

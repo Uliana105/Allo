@@ -1,6 +1,5 @@
 package Mobile.Objects;
 
-import Mobile.Objects.PageTools;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 
@@ -33,6 +32,8 @@ public class AlloPage {
     private By locationButton = AppiumBy.xpath("//android.widget.Button[@text=\"Каталог товарів\"]/../android.widget.Button[4]");
     private By locationTitle = AppiumBy.xpath("//android.view.View[contains(@text,\"Ваше місто:\")]");
     private By availableLocations = AppiumBy.xpath("//android.view.View[contains(@text,\"Ваше місто:\")]/..//android.view.View[@content-desc]/android.widget.TextView");
+    private By specialOffers = AppiumBy.xpath("//android.widget.Button[@text=\"Купити\"]/../android.widget.ListView//android.widget.Image");
+    private By sideMenutitle = AppiumBy.xpath("//android.widget.Image[@text=\"Интернет-Магазин Allo\"]");
 
     public void searchByText(String text) {
         driver.findElement(searchField).click();
@@ -40,7 +41,7 @@ public class AlloPage {
         driver.findElement(searchButton).click();
     }
 
-    public int getNumberOfResults() {
+    public int getNumberOfResultsOLD() {
         pageTools.waitForElementVisibility(filtersButton);
 
         List<String> productCards = new ArrayList<>(
@@ -53,6 +54,30 @@ public class AlloPage {
             productCards.addAll(driver.findElements(searchResults).stream()
                     .map(WebElement::getText)
                     .collect(Collectors.toList()));
+        }
+
+        return new HashSet<>(productCards).size();
+    }
+
+    // Scroll and count unique search results
+    public int getNumberOfResults() {
+        List<WebElement> results = driver.findElements(searchResults);
+        List<String> productCards = new ArrayList<>(
+                results.stream()
+                        .map(WebElement::getText)
+                        .collect(Collectors.toList()));
+
+        while (results.size() >= 2) {
+            pageTools.scrollDownBetweenPoints(
+                    results.get(results.size() - 1),
+                    results.get(0)
+            );
+
+            results = driver.findElements(searchResults);
+            productCards.addAll(results.stream()
+                    .map(WebElement::getText)
+                    .collect(Collectors.toList()));
+
         }
 
         return new HashSet<>(productCards).size();
@@ -75,7 +100,8 @@ public class AlloPage {
     }
 
     public String getPageTitleText() {
-        pageTools.waitForElementVisibility(filtersButton);
+        pageTools.waitForElementInvisibility(sideMenutitle);
+        pageTools.waitForElementVisibility(specialOffers);
         return driver.findElement(pageTitle).getText();
     }
 

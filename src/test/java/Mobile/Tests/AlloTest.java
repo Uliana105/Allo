@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.List;
 
-public class AlloTest extends BaseTest{
+public class AlloTest extends BaseTest {
 
     private HashMap<String, String> cityCase = new HashMap<>(){{
         put("Київ","Києві");
@@ -65,28 +65,16 @@ public class AlloTest extends BaseTest{
         alloPage.clickCatalogItem("Всі товари →");
 
         String productPageTitle = alloPage.getPageTitleText();
-        System.out.println(productPageTitle);
 
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         alloPage.clickMenuButton();
         alloPage.clickLocationButton();
 
         List<String> cities = alloPage.getAvailableLocations();
-        System.out.println(cities);
         String newCity = cities.get(RandomGenerator.randInteger(cities.size()));
+
         alloPage.selectCity(newCity);
 
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         String newProductPageTitle = alloPage.getPageTitleText();
-        System.out.println(newProductPageTitle);
 
         Assert.assertNotEquals(productPageTitle, newProductPageTitle, "Title wasn't changed");
         Assert.assertEquals(newProductPageTitle, String.format("Телевізори у %s", cityCase.get(newCity)));
