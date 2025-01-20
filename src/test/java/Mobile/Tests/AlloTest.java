@@ -55,26 +55,26 @@ public class AlloTest extends BaseTest {
 
     @Test
     public void changeLocationTest() {
-        alloPage.clickMenuButton();
-
-        alloPage.clickProductCatalogButton();
-
         //Select specific category
+        alloPage.clickMenuButton();
+        alloPage.clickProductCatalogButton();
         alloPage.clickCatalogItem("Телевізори та мультимедіа");
         alloPage.clickCatalogItem("Телевізори");
         alloPage.clickCatalogItem("Всі товари →");
 
-        String productPageTitle = alloPage.getPageTitleText();
+        String productPageTitle = alloPage.getPageTitleText(); // get current title
 
+        // go to location selection
         alloPage.clickMenuButton();
         alloPage.clickLocationButton();
 
+        // randomize new city
         List<String> cities = alloPage.getAvailableLocations();
         String newCity = cities.get(RandomGenerator.randInteger(cities.size()));
 
-        alloPage.selectCity(newCity);
+        alloPage.selectCity(newCity); // select new city
 
-        String newProductPageTitle = alloPage.getPageTitleText();
+        String newProductPageTitle = alloPage.getPageTitleText(); // get new title
 
         Assert.assertNotEquals(productPageTitle, newProductPageTitle, "Title wasn't changed");
         Assert.assertEquals(newProductPageTitle, String.format("Телевізори у %s", cityCase.get(newCity)));

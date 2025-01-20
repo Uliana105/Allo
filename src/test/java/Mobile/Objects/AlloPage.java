@@ -22,18 +22,18 @@ public class AlloPage {
     }
 
     private By searchField = AppiumBy.xpath("//android.widget.Button[@text=\"Надіслати\"]/../android.view.View/android.widget.EditText");
-    private By searchButton = AppiumBy.xpath("//android.widget.Button[@text=\"Надіслати\"]");
+    private By searchButton = AppiumBy.androidUIAutomator("new UiSelector().text(\"Надіслати\")");
     private By searchResults = AppiumBy.xpath("//android.widget.Button[@text=\"Купити\"]/../android.view.View[@content-desc]/android.widget.TextView[@text]");
-    private By filtersButton = AppiumBy.xpath("//android.widget.Button[@text=\" Filters\"]");
-    private By pageNumber = AppiumBy.xpath("//android.view.View[@content-desc=\"1\"]");
-    private By menuButton = AppiumBy.xpath("//android.widget.Button[@text=\"Відкрити меню\"]");
+    private By filtersButton = AppiumBy.androidUIAutomator("new UiSelector().text(\" Filters\")");
+    private By pageNumber = AppiumBy.androidUIAutomator("new UiSelector().text(\"1\").instance(0)");
+    private By menuButton = AppiumBy.androidUIAutomator("new UiSelector().text(\"Відкрити меню\")");
     private By productCatalogButton = AppiumBy.xpath("//android.widget.Button[@text=\"Каталог товарів\"]");
     private By pageTitle = AppiumBy.xpath("//android.webkit.WebView/android.view.View/android.view.View/android.widget.TextView[@text]");
     private By locationButton = AppiumBy.xpath("//android.widget.Button[@text=\"Каталог товарів\"]/../android.widget.Button[4]");
     private By locationTitle = AppiumBy.xpath("//android.view.View[contains(@text,\"Ваше місто:\")]");
     private By availableLocations = AppiumBy.xpath("//android.view.View[contains(@text,\"Ваше місто:\")]/..//android.view.View[@content-desc]/android.widget.TextView");
     private By specialOffers = AppiumBy.xpath("//android.widget.Button[@text=\"Купити\"]/../android.widget.ListView//android.widget.Image");
-    private By sideMenutitle = AppiumBy.xpath("//android.widget.Image[@text=\"Интернет-Магазин Allo\"]");
+    private By sideMenutitle = AppiumBy.androidUIAutomator("new UiSelector().text(\"Интернет-Магазин Allo\")");
 
     public void searchByText(String text) {
         driver.findElement(searchField).click();
