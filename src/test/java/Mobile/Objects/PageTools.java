@@ -1,6 +1,7 @@
 package Mobile.Objects;
 
 import Common.Constants;
+import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
@@ -32,6 +33,11 @@ public class PageTools {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
     }
 
+    public void waitForElementClickable(By by) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.IMPLICIT_WAIT));
+        wait.until(ExpectedConditions.elementToBeClickable(by));
+    }
+
     public void performScrollDown() {
         int windowHeight = driver.manage().window().getSize().getHeight();
         int windowWidth = driver.manage().window().getSize().getWidth();
@@ -61,6 +67,10 @@ public class PageTools {
         performMoveAction(start, destination, "move");
     }
 
+    public void moveElement(Point pointA, Point pointB) {
+        performMoveAction(pointA, pointB, "move");
+    }
+
     public void scrollDownBetweenPoints(WebElement pointA, WebElement pointB) {
         int windowWidth = driver.manage().window().getSize().getWidth();
 
@@ -71,7 +81,7 @@ public class PageTools {
     }
 
     private void performMoveAction(Point start, Point end, String type) {
-        int duration = type.equals("scroll") ? 1500 : 1000;
+        int duration = type.equals("scroll") ? 1500 : 3000;
         PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
         Sequence move = new Sequence(finger, 1);
 

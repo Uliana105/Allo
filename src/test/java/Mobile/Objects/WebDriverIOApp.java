@@ -1,7 +1,10 @@
 package Mobile.Objects;
 
+import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumBy;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
 
 public class WebDriverIOApp {
@@ -38,6 +41,7 @@ public class WebDriverIOApp {
 
     // Bottom menu
     public void clickMenuSwipeBtn() {
+        pageTools.waitForElementVisibility(homeScreen);
         driver.findElement(swipeBtn).click();
     }
 
@@ -57,6 +61,9 @@ public class WebDriverIOApp {
     }
 
     public void swipeToElementsInCarouselPresent(String num) {
+//        driver.findElement(AppiumBy.androidUIAutomator(
+//                "new UiScrollable(new UiSelector().description(\"Carousel\")).setAsHorizontalList().scrollForward()"
+//                + ".setMaxSearchSwipes(10).scrollIntoView(new UiSelector().resourceId(\"__CAROUSEL_ITEM_" + num + "_READY__\"))"));
         do {
             pageTools.swipeElementToTheLeft(secondCarouselItem);
         } while (!pageTools.isElementPresent(AppiumBy.xpath(String.format(carouselItems, num))));

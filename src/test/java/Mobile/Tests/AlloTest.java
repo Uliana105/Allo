@@ -6,8 +6,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AlloTest extends BaseTest {
 
@@ -51,6 +54,29 @@ public class AlloTest extends BaseTest {
         int num = alloPage.getNumberOfResults();
         System.out.println(num);
         Assert.assertTrue(num > 2, "Fewer results than expected");
+    }
+
+    @Test
+    public void filterResultsByPrice() {
+        alloPage.searchByText("iPhone");
+
+        alloPage.clickFilterBtn();
+
+        alloPage.setMinPriceToPercent(0.25);
+
+        alloPage.setMaxPriceToPercent(0.75);
+
+        int minPrice = alloPage.getMinPrice();
+        int maxPrice = alloPage.getMaxPrice();
+
+        alloPage.clickShowResultsBtn();
+
+        Set<Integer> prices = alloPage.getResultsPrices();
+
+        Assert.assertTrue(prices.stream().allMatch(num -> num >= minPrice && num <= maxPrice),
+                "Prices aren't in range: " + prices.stream()
+                        .filter(number -> number < minPrice || number > maxPrice)
+                        .collect(Collectors.toList()));
     }
 
     @Test
