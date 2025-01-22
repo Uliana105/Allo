@@ -1,7 +1,7 @@
 package Mobile.Objects;
 
 import Common.Constants;
-import io.appium.java_client.AppiumBy;
+import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
@@ -33,11 +33,6 @@ public class PageTools {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
     }
 
-    public void waitForElementClickable(By by) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.IMPLICIT_WAIT));
-        wait.until(ExpectedConditions.elementToBeClickable(by));
-    }
-
     public void performScrollDown() {
         int windowHeight = driver.manage().window().getSize().getHeight();
         int windowWidth = driver.manage().window().getSize().getWidth();
@@ -58,17 +53,15 @@ public class PageTools {
     }
 
     public void moveElement(By pointA, By pointB) {
-        Point start = driver.findElement(pointA).getLocation();
-        WebElement pointBElement = driver.findElement(pointB);
-        Point destination = new Point(
-                pointBElement.getLocation().getX() + pointBElement.getSize().getWidth()/2,
-                pointBElement.getLocation().getY() + pointBElement.getSize().getHeight()/2);
+        WebElement startPoint = driver.findElement(pointA);
+        WebElement endPoint = driver.findElement(pointB);
 
-        performMoveAction(start, destination, "move");
-    }
-
-    public void moveElement(Point pointA, Point pointB) {
-        performMoveAction(pointA, pointB, "move");
+        driver.executeScript("mobile: dragGesture", ImmutableMap.of(
+                "startX", startPoint.getLocation().getX() + startPoint.getSize().getWidth()/2,
+                "startY", startPoint.getLocation().getY() + startPoint.getSize().getHeight()/2,
+                "endX", endPoint.getLocation().getX() + endPoint.getSize().getWidth()/2,
+                "endY", endPoint.getLocation().getY() + endPoint.getSize().getHeight()/2
+        ));
     }
 
     public void scrollDownBetweenPoints(WebElement pointA, WebElement pointB) {
