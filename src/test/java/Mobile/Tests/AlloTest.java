@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class AlloTest extends BaseTest {
 
-    private HashMap<String, String> cityCase = new HashMap<>(){{
+    private HashMap<String, String> cityCase = new HashMap<String, String>(){{
         put("Київ","Києві");
         put("Харків","Харкові");
         put("Одеса","Одесі");
