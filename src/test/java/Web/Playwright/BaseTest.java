@@ -1,62 +1,53 @@
 package Web.Playwright;
 
-import AllureUtils.ScreenshotRecorder;
-import AllureUtils.VideoRecorder;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 import io.qameta.allure.Allure;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.jupiter.api.*;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class BaseTest {
 
     static Playwright playwright;
     static Browser browser;
+    static BrowserContext context;
+    static Page page;
 
-    File videoFile;
-    @BeforeAll
-    public static void launchBrowser() {
+    @BeforeMethod
+    public void launchBrowser() {
+        ArrayList<String> args = new ArrayList<>();
+        args.add("--start-maximized");
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)
+                .setArgs(args));
+        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(null)
+                .setRecordVideoDir(Paths.get("./target/videos/")));
+        context.tracing().start(new Tracing.StartOptions()
+                .setScreenshots(true)
+                .setSnapshots(true)
+                .setSources(true));
     }
 
-//    @AfterMethod(alwaysRun = true)
-//    public void tearDown(ITestResult result) {
-//        File newFile = new File(videoFile.getParent(), result.getName() + ".avi");
-//        try {
-//            VideoRecorder.stopRecording();
-//
-//            //Rename created video record to test name
-//            VideoRecorder.renameVideoRecord(videoFile, newFile);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        if (result.getStatus() == ITestResult.FAILURE) {
-//            // Attach screenshot to allure report
-//            File screenshot = null;
-//            try {
-//                screenshot = ScreenshotRecorder.takeScreenshot(result.getName(), driver);
-//                System.out.println("Attaching screenshot...");
-//                Allure.addAttachment("Screenshot", FileUtils.openInputStream(screenshot));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//
-//            // Attach video to allure report
-//            try {
-//                Allure.addAttachment("Video", FileUtils.openInputStream(newFile));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        } else if (result.getStatus() == ITestResult.SUCCESS) {
-//            // Delete video for passed tests
-//            VideoRecorder.deleteRecordedVideo(newFile);
-//        }
-//    }
+    @AfterMethod
+    public void tearDown(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE || result.getStatus() == ITestResult.SKIP) {
+            File screenshot = new File("./target/screenshots/" + result.getName() + result.getStartMillis() + ".png");
+            page.screenshot(new Page.ScreenshotOptions().setPath(screenshot.toPath()));
+            Allure.addAttachment("Screenshot", FileUtils.openInputStream(screenshot));
+            Allure.addAttachment("Video", FileUtils.openInputStream(page.video().path().toFile()));
+        } else if (result.getStatus() == ITestResult.SUCCESS) {
+            page.video().delete();
+        }
+
+        context.tracing().stop(new Tracing.StopOptions()
+                .setPath(new File("./target/trace/" + result.getName() + result.getStartMillis() + ".zip").toPath()));
+
+        context.close();
+        playwright.close();
+    }
 }

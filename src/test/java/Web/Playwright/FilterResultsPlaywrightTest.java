@@ -3,17 +3,17 @@ package Web.Playwright;
 import Common.Constants;
 import Pages.Playwright.MainPage;
 import Pages.Playwright.SearchResultsPage;
-import Web.Playwright.BaseTest;
 
-import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.LoadState;
-import org.junit.jupiter.api.*;
+import io.qameta.allure.testng.AllureTestNg;
+import org.testng.annotations.*;
 import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
+@Listeners({AllureTestNg.class})
 public class FilterResultsPlaywrightTest extends BaseTest {
     String textToSearch = "IPhone";
     String minPrice = "10000";
@@ -22,7 +22,7 @@ public class FilterResultsPlaywrightTest extends BaseTest {
 
     @Test
     public void filterResultsByPrice() {
-        Page page = browser.newPage();
+        page = context.newPage();
 
         // Open Allo Main page
         page.navigate(Constants.BASE_URL);
@@ -63,7 +63,9 @@ public class FilterResultsPlaywrightTest extends BaseTest {
         int numOfPages = searchResultsPage.getNumOfPages();
 
         Assert.assertTrue(prices.stream().allMatch(num -> num >= Integer.parseInt(minPrice) && num <= Integer.parseInt(maxPrice)),
-                "Prices aren't in range: " + prices);
+                "Prices aren't in range: " + prices.stream()
+                        .filter(number -> number < Integer.parseInt(minPrice) || number > Integer.parseInt(maxPrice))
+                        .collect(Collectors.toList()));
 
         if (numOfPages > 1) {
             for (int i = 2; i < numOfPages; i++) {
@@ -72,11 +74,9 @@ public class FilterResultsPlaywrightTest extends BaseTest {
                 prices = searchResultsPage.getProductsPrices();
                 Assert.assertTrue(prices.stream().allMatch(num -> num >= Integer.parseInt(minPrice) && num <= Integer.parseInt(maxPrice)),
                         "Prices aren't in range: " + prices.stream()
-                                .filter(number -> number < 10000 || number > 20000)
+                                .filter(number -> number < Integer.parseInt(minPrice) || number > Integer.parseInt(maxPrice))
                                 .collect(Collectors.toList()));
             }
         }
-
-        page.pause();
     }
 }

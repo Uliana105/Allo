@@ -3,26 +3,21 @@ package Web.Playwright;
 import Common.Constants;
 import Pages.Playwright.MainPage;
 import Pages.Playwright.SearchResultsPage;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.LoadState;
-import org.junit.jupiter.api.*;
+import io.qameta.allure.testng.AllureTestNg;
 import org.testng.Assert;
+import org.testng.annotations.*;
 
 import static org.junit.Assert.*;
 
+@Listeners({AllureTestNg.class})
 public class SearchProductPlaywrightTest extends BaseTest {
-
-    Page page;
-
     String textToSearch = "IPhone";
     int expectedMinNumOfResults = 2;
 
     @Test
     public void searchProductByText() {
-        Page page = browser.newPage();
+        page = context.newPage();
 
         //Step 1: Open Allo Main page
         page.navigate(Constants.BASE_URL);
